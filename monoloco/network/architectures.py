@@ -1,11 +1,17 @@
-
 import torch
 from torch import nn
 
 
 class LocoModel(nn.Module):
-
-    def __init__(self, input_size, output_size=2, linear_size=512, p_dropout=0.2, num_stage=3, device='cuda'):
+    def __init__(
+        self,
+        input_size,
+        output_size=2,
+        linear_size=512,
+        p_dropout=0.2,
+        num_stage=3,
+        device="cuda",
+    ):
         super().__init__()
 
         self.num_stage = num_stage
@@ -52,8 +58,8 @@ class LocoModel(nn.Module):
         y = self.relu(y)
         y = self.dropout(y)
 
-        for i in range(self.num_stage):
-            y = self.linear_stages[i](y)
+        for _, stage in enumerate(self.linear_stages):
+            y = stage(y)
 
         # Auxiliary task
         y = self.w2(y)
@@ -108,7 +114,9 @@ class MonolocoModel(nn.Module):
     Pytorch implementation from: https://github.com/weigq/3d_pose_baseline_pytorch
     """
 
-    def __init__(self, input_size, output_size=2, linear_size=256, p_dropout=0.2, num_stage=3):
+    def __init__(
+        self, input_size, output_size=2, linear_size=256, p_dropout=0.2, num_stage=3
+    ):
         super().__init__()
 
         self.input_size = input_size
@@ -139,8 +147,8 @@ class MonolocoModel(nn.Module):
         y = self.relu(y)
         y = self.dropout(y)
         # linear layers
-        for i in range(self.num_stage):
-            y = self.linear_stages[i](y)
+        for _, stage in enumerate(self.linear_stages):
+            y = stage(y)
         y = self.w2(y)
         return y
 
